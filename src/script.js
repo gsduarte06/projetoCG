@@ -158,3 +158,13 @@ document.addEventListener("keydown", function (e) {
 });
 
 update();
+
+document.getElementById('playButton').addEventListener('click', function() {
+  document.querySelector('.intro-container').classList.add('fade-out');
+  setTimeout(function() {
+    document.querySelector('.intro-container').style.display = 'none';
+    document.querySelector('#gameContainer').style.display = 'block';
+  }, 1000);
+});
+
+

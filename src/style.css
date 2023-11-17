@@ -1,5 +1,119 @@
+body {
+  background-color: #E8FBE8;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative;
+}
+
+.container {
+  text-align: center;
+  background-image: none;
+}
+
 #lawnmowerCanvas {
-    background-color: lightgreen; /* Lawn Green */
-    display: block;
-    margin: 0 auto;
-  }
+  background-color: lightgreen; /* Lawn Green */
+  display: block;
+  margin: 0 auto;
+  border: 3px solid #395F39;
+  border-radius: 15px;
+}
+
+.controls {
+  margin-top: 20px; 
+}
+
+label {
+  margin-right: 10px;
+  color: #395F39; /* Label text color */
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: larger;
+  font-weight: bold;
+}
+
+#speedInput {
+  padding: 5px;
+  font-size: 16px;
+  background-color: #abc5ab;
+  transition: all 1s;
+  border: 0px;
+}
+
+#startButton {
+  padding: 8px 15px;
+  font-size: 18px;
+  background-color: #395F39;
+  transition: all 1s;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#startButton:hover {
+  background-color: #274026;
+}
+
+#startButton:disabled,
+#startButton:disabled:hover {
+  background-color: #b3b3b3;
+  cursor: not-allowed;
+}
+
+#speedInput:disabled {
+  background-color: #dde7dd;
+  cursor: not-allowed;
+}
+
+.intro-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #E8FBE8;
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: larger;
+}
+
+#gameContainer {
+  display: none;
+  position: absolute;
+}
+
+.rules-container{
+  display: none;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: larger;
+}
+
+h1 {
+  font-size: 2em;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #395F39;
+  transition: all 1s;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #274026;
+}
+
+.fade-out {
+  opacity: 0;
+}
