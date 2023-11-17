@@ -2,14 +2,19 @@ const canvas = document.querySelector("#lawnmowerCanvas");
 const ctx = canvas.getContext("2d");
 
 const W = canvas.width, H = canvas.height;
-
+//Production code comented for testing
 var lawn = [];
-for (var i = 0; i < W; i += 64) {
-  for (var j = 0; j < H; j += 64) {
-    lawn.push({ x: i, y: j, width: 64, height: 64, color: "green" });
-  }
+for (var i = 0; i < W; i += 8) {
+    for (var j = 0; j < H; j += 8) {
+        lawn.push({ x: i, y: j, width: 8, height: 8, color: "green" });
+    }
 }
-
+/* var lawn = [];
+for (var i = 0; i < W; i += 64) {
+    for (var j = 0; j < H; j += 64) {
+        lawn.push({ x: i, y: j, width: 64, height: 64, color: "green" });
+    }
+} */
 
 // Lawnmower object
 let lawnmower = {
@@ -104,19 +109,28 @@ function updateImage() {
     }
 }
 
-
+lawnmowerImage.width = 32; // default
+lawnmowerImage.height = 32; // default
 // Animation loop
 function render() {
+    //Check win
+    const win = arr => arr.every(v => v.color === arr[0].color && arr[0].color === "lightgreen" && lawnmower.canplay)
+    if (win(lawn)) {
+        alert("WIN WIN")
+        lawnmower.canplay = false;
+    }
     ctx.clearRect(0, 0, W, H);
-    lawn.forEach(function(block) {
+
+    // Draw lawn
+    lawn.forEach(function (block) {
         ctx.fillStyle = block.color;
         ctx.fillRect(block.x, block.y, block.width, block.height);
-      });
-    // Draw lawnmower
-    ctx.drawImage(currentImage, lawnmower.x, lawnmower.y, 64, 64);
+    });
 
     // Update lawnmower position
     if (lawnmower.canplay) {
+
+
         const prevX = lawnmower.x;
         const prevY = lawnmower.y;
 
@@ -126,23 +140,40 @@ function render() {
         // Boundary checking
         if (lawnmower.x < 5) lawnmower.x = 5;
         if (lawnmower.y < 5) lawnmower.y = 5;
-        if (lawnmower.x + 50 > W) lawnmower.x = W - 50;
-        if (lawnmower.y + 50 > H) lawnmower.y = H - 50;
+        if (lawnmower.x + 32 > W) lawnmower.x = W - 32;
+        if (lawnmower.y + 32 > H) lawnmower.y = H - 32;
 
-        updateImage()
-
-        lawn.forEach(function(block) {
+        // Update lawn color based on lawnmower movement
+        lawn.forEach(function (block) {
             if (
                 prevX < block.x + block.width &&
-                prevX + 50 > block.x &&
+                prevX + 30 > block.x &&
                 prevY < block.y + block.height &&
-                prevY + 50 > block.y
+                prevY + 30 > block.y
             ) {
                 block.color = "lightgreen";
             }
         });
+
+
+        // Check if the lawnmower is moving diagonally
+        if (lawnmower.dirX !== 0 && lawnmower.dirY !== 0) {
+            lawnmowerImage.width = 50; // Adjust the width
+            lawnmowerImage.height = 50; // Adjust the height
+        } else {
+            lawnmowerImage.width = 32; // Reset the width to default
+            lawnmowerImage.height = 32; // Reset the height to default
+        }
+        // Update lawnmower image
+        updateImage();
+
     }
 
 
+    // Draw lawnmower
+    ctx.drawImage(currentImage, lawnmower.x, lawnmower.y, lawnmowerImage.width, lawnmowerImage.height);
+
+
     window.requestAnimationFrame(render);
+
 }
