@@ -230,7 +230,7 @@ if (lawnmower.canplay) {
 
 }
 
-document.getElementById('playButton').addEventListener('click', function() {
+document.getElementById('mowText').addEventListener('click', function() {
     document.querySelector('.intro-container').classList.add('fade-out');
     setTimeout(function() {
       document.querySelector('.intro-container').style.display = 'none';
