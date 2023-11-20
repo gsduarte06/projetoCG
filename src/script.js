@@ -3,18 +3,18 @@ const ctx = canvas.getContext("2d");
 
 const W = canvas.width, H = canvas.height;
 //Production code comented for testing
-var lawn = [];
+/* var lawn = [];
 for (var i = 0; i < W; i += 8) {
     for (var j = 0; j < H; j += 8) {
         lawn.push({ x: i, y: j, width: 8, height: 8, color: "green" });
     }
-}
-/* var lawn = [];
+} */
+var lawn = [];
 for (var i = 0; i < W; i += 64) {
     for (var j = 0; j < H; j += 64) {
         lawn.push({ x: i, y: j, width: 64, height: 64, color: "green" });
     }
-} */
+}
 
 // Lawnmower object
 let lawnmower = {
@@ -108,7 +108,34 @@ function updateImage() {
         currentImage = images.downRight;
     }
 }
+function animWin() {
+    document.getElementById("wrapper").style.display= "flex"
+    for (i = 0; i < 200; i++) {
+        // Random rotation
+        var randomRotation = Math.floor(Math.random() * 360);
+        // Random width & height between 0 and viewport
+        var randomWidth = Math.floor(Math.random() * Math.max(document.documentElement.clientWidth, window.innerWidth || 0));
+        var randomHeight = Math.floor(Math.random() * Math.max(document.documentElement.clientHeight, window.innerHeight || 0));
 
+        // Random animation-delay
+        var randomAnimationDelay = Math.floor(Math.random() * 10);
+        console.log(randomAnimationDelay)
+
+        // Random colors
+        var colors = ['#0CD977', '#FF1C1C', '#FF93DE', '#5767ED', '#FFC61C', '#8497B0']
+        var randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+        // Create confetti piece
+        var confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.top = randomHeight + 'px';
+        confetti.style.left = randomWidth + 'px';
+        confetti.style.backgroundColor = randomColor;
+        confetti.style.transform = 'skew(15deg) rotate(' + randomRotation + 'deg)';
+        confetti.style.animationDelay = randomAnimationDelay + 's';
+        document.getElementById("confetti-wrapper").appendChild(confetti);
+    }
+}
 lawnmowerImage.width = 32; // default
 lawnmowerImage.height = 32; // default
 // Animation loop
@@ -116,8 +143,8 @@ function render() {
     //Check win
     const win = arr => arr.every(v => v.color === arr[0].color && arr[0].color === "lightgreen" && lawnmower.canplay)
     if (win(lawn)) {
-        alert("WIN WIN")
         lawnmower.canplay = false;
+        animWin();
     }
     ctx.clearRect(0, 0, W, H);
 
@@ -177,3 +204,11 @@ function render() {
     window.requestAnimationFrame(render);
 
 }
+
+document.getElementById('playButton').addEventListener('click', function() {
+    document.querySelector('.intro-container').classList.add('fade-out');
+    setTimeout(function() {
+      document.querySelector('.intro-container').style.display = 'none';
+      document.querySelector('#gameContainer').style.display = 'block';
+    }, 1000);
+  });

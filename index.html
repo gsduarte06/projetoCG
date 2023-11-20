@@ -1,23 +1,39 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Lawnmower Simulator</title>
-    <link rel="stylesheet" href="./src/style.css">
-  </head>
-  <body>
-    <canvas id="lawnmowerCanvas" width="800" height="400"></canvas>
-    <div>
-      <label for="speedInput">Velocidade:</label>
-      <input
-        type="number"
-        id="speedInput"
-        value="1"
-        min="1"
-        max="5"
-      />
-    </div> 
-    <button id="startButton">Start Mowing</button>
-    <script  src="./src/script.js" ></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Lawnmower Simulator</title>
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+
+<body>
+
+    <div class="intro-container">
+      <h1>Welcome to Lawnmower Simulator!</h1>
+      <p>Get ready to mow the lawn</p>
+      <button id="playButton">Play Now</button>
+    </div>
+  
+    <div class="container" id="gameContainer">
+      <canvas id="lawnmowerCanvas" width="1000" height="600"></canvas>
+      <div class="controls">
+        <label for="speedInput">Velocidade:</label>
+        <input type="number" id="speedInput" value="1" min="1" max="5" />
+        <button id="startButton">Start Mowing</button>
+      </div>
+    </div>
+  
+
+  <div id="wrapper">
+    <div id="modal">
+      <span id="emoji">👏</span>
+      <h1>Good job on the lawnmowing!</h1>
+      <a href="#" id="modal-btn">Try again</a>
+    </div>
+    <div id="confetti-wrapper"></div>
+  </div>
+  <script src="./src/script.js"></script>
+</body>
+
 </html>
