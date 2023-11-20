@@ -1,18 +1,30 @@
+
 const canvas = document.querySelector("#lawnmowerCanvas");
 const ctx = canvas.getContext("2d");
 
 const W = canvas.width, H = canvas.height;
-//Production code comented for testing
-/* var lawn = [];
-for (var i = 0; i < W; i += 8) {
-    for (var j = 0; j < H; j += 8) {
-        lawn.push({ x: i, y: j, width: 8, height: 8, color: "green" });
+
+// Lawn initialization with an obstacle (hole)
+const lawn = [];
+for (let i = 0; i < W; i += 8) {
+    for (let j = 0; j < H; j += 8) {
+        lawn.push({ x: i, y: j, width: 8, height: 8, color: "green"});
     }
-} */
-var lawn = [];
-for (var i = 0; i < W; i += 64) {
-    for (var j = 0; j < H; j += 64) {
-        lawn.push({ x: i, y: j, width: 64, height: 64, color: "green" });
+}
+
+// Add an obstacle (hole) to the lawn
+
+for (let v in lawn){
+    console.log(v);
+    if((lawn[v].x >= 80 && lawn[v].x < 112) && (lawn[v].y >= 80 && lawn[v].y < 112)){
+        lawn[v].color = "lightgreen"
+    }
+}
+lawn.push({ x: 80, y: 80, width: 32, height: 32, color: "lightgreen"});
+console.log(lawn);
+for (let i = 80; i < 80+32; i += 8) {
+    for (let j = 80; j < 80+32; j += 8) {
+
     }
 }
 
@@ -109,7 +121,7 @@ function updateImage() {
     }
 }
 function animWin() {
-    document.getElementById("wrapper").style.display= "flex";
+    document.getElementById("wrapper").style.display= "flex"
     for (i = 0; i < 200; i++) {
         // Random rotation
         var randomRotation = Math.floor(Math.random() * 360);
@@ -155,46 +167,59 @@ function render() {
     });
 
     // Update lawnmower position
-    if (lawnmower.canplay) {
+if (lawnmower.canplay) {
+    const prevX = lawnmower.x;
+    const prevY = lawnmower.y;
 
+    // Update lawnmower position based on direction
+    lawnmower.x += lawnmower.dirX * lawnmower.speed;
+    lawnmower.y += lawnmower.dirY * lawnmower.speed;
 
-        const prevX = lawnmower.x;
-        const prevY = lawnmower.y;
+    // Boundary checking for the canvas edges
+    if (lawnmower.x < 5) lawnmower.x = 5;
+    if (lawnmower.y < 5) lawnmower.y = 5;
+    if (lawnmower.x + 32 > W) lawnmower.x = W - 32;
+    if (lawnmower.y + 32 > H) lawnmower.y = H - 32;
 
-        lawnmower.x += lawnmower.dirX * lawnmower.speed;
-        lawnmower.y += lawnmower.dirY * lawnmower.speed;
+    // Boundary checking for the hole
+    const hole = lawn[lawn.length - 1]; // The last element is the hole
+    if (
+        lawnmower.x < hole.x + hole.width &&
+        lawnmower.x + 32 > hole.x &&
+        lawnmower.y < hole.y + hole.height &&
+        lawnmower.y + 32 > hole.y
+    ) {
+        // Adjust lawnmower position to prevent moving into the hole
+        lawnmower.x = prevX;
+        lawnmower.y = prevY;
+    }
 
-        // Boundary checking
-        if (lawnmower.x < 5) lawnmower.x = 5;
-        if (lawnmower.y < 5) lawnmower.y = 5;
-        if (lawnmower.x + 32 > W) lawnmower.x = W - 32;
-        if (lawnmower.y + 32 > H) lawnmower.y = H - 32;
-
-        // Update lawn color based on lawnmower movement
-        lawn.forEach(function (block) {
-            if (
-                prevX < block.x + block.width &&
-                prevX + 30 > block.x &&
-                prevY < block.y + block.height &&
-                prevY + 30 > block.y
-            ) {
+    // Update lawn color based on lawnmower movement
+    lawn.forEach(function (block) {
+        if (
+            prevX < block.x + block.width &&
+            prevX + 30 > block.x &&
+            prevY < block.y + block.height &&
+            prevY + 30 > block.y
+        ) {
+            if (block.color === "green" && block !== hole) {
                 block.color = "lightgreen";
             }
-        });
-
-
-        // Check if the lawnmower is moving diagonally
-        if (lawnmower.dirX !== 0 && lawnmower.dirY !== 0) {
-            lawnmowerImage.width = 50; // Adjust the width
-            lawnmowerImage.height = 50; // Adjust the height
-        } else {
-            lawnmowerImage.width = 32; // Reset the width to default
-            lawnmowerImage.height = 32; // Reset the height to default
         }
-        // Update lawnmower image
-        updateImage();
+    });
 
+    // Check if the lawnmower is moving diagonally
+    if (lawnmower.dirX !== 0 && lawnmower.dirY !== 0) {
+        lawnmowerImage.width = 50;
+        lawnmowerImage.height = 50;
+    } else {
+        lawnmowerImage.width = 32;
+        lawnmowerImage.height = 32;
     }
+
+    // Update lawnmower image
+    updateImage();
+}
 
 
     // Draw lawnmower
