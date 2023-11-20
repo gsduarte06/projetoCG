@@ -109,7 +109,7 @@ function updateImage() {
     }
 }
 function animWin() {
-    document.getElementById("wrapper").style.display= "flex"
+    document.getElementById("wrapper").style.display= "flex";
     for (i = 0; i < 200; i++) {
         // Random rotation
         var randomRotation = Math.floor(Math.random() * 360);
