@@ -11,6 +11,8 @@ body {
   height: 100vh;
   position: relative;
   overflow: hidden;
+  font-family: 'Grass Road';
+
 }
 
 .container {
@@ -72,12 +74,11 @@ label {
 #speedInput:disabled {
   background-color: #dde7dd;
   cursor: not-allowed;
-  font-family: 'Grass Road';
+
 }
 
-
 #LabelSpeed{
-  font-family: 'Grass Road';
+ font-family: 'Grass Road';
 }
 
 .intro-container {
@@ -89,7 +90,7 @@ label {
   background-color: #E8FBE8;
   opacity: 1;
   transition: opacity 1s ease-in-out;
-  font-family: 'Grass Road';
+
   font-size: larger;
 }
 
@@ -105,13 +106,13 @@ label {
 
 h1 {
   font-size: 3em;
-  font-family: 'Grass Road';
+
 }
 
 p {
   font-size: 1.5em;
   margin-bottom: 20px;
-  font-family: 'Grass Road';
+
 }
 
 span {
@@ -120,7 +121,7 @@ span {
   transition: all 2s;
   color: #395F39;
   cursor: pointer;
-  font-family: 'Grass Road';
+
   font-weight: bolder;
 }
 
@@ -146,7 +147,6 @@ color: #1d1f1c;
   display: none;
   justify-content: center;
   align-items: center;
-
 }
 
 #modal {
@@ -157,7 +157,6 @@ color: #1d1f1c;
   background-color: #fff;
   border-radius: 0.25rem;
   padding: 2rem;
-
 }
 
 #emoji {
@@ -189,7 +188,7 @@ p {
   border-radius: 0 0 .25rem .25rem;
   background-color: var(--green);
   text-decoration: none;
-  font-family: 'Grass Road';
+
 }
 
 @keyframes confettiRain {
