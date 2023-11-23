@@ -14,26 +14,32 @@ for (let i = 0; i < W; i += 64) {
 const lawn = [];
 for (let i = 0; i < W; i += 8) {
     for (let j = 0; j < H; j += 8) {
-        lawn.push({ x: i, y: j, width: 8, height: 8, color: "green"});
+        lawn.push({ x: i, y: j, width: 8, height: 8, color: "green",image:""});
     }
+}
+
+let TreeImage = new Image();
+TreeImage.src = "./src/images/tree-1.png"
+TreeImage.onload = function(){
+    PlaceObsticle(100,132, TreeImage);
 }
 
 
 // Add an obstacle (hole) to the lawn
 
-for (let v in lawn){
-    console.log(v);
-    if((lawn[v].x >= 80 && lawn[v].x < 112) && (lawn[v].y >= 80 && lawn[v].y < 112)){
-        lawn[v].color = "lightgreen"
+function PlaceObsticle(x,y,TreeImage){
+    for (let v in lawn){
+        if((lawn[v].x >= x  && lawn[v].x < 124) && (lawn[v].y >= y && lawn[v].y < 144)){
+            lawn[v].color = "lightgreen"
+        }
     }
+    
+    lawn.push({ x: x +  5 , y: y, width: 19, height: 12, color: "lightgreen", image: 1});
+    ctx.drawImage(TreeImage, x, y, TreeImage.width, TreeImage.height);
+    console.log(lawn);
 }
-lawn.push({ x: 80, y: 80, width: 32, height: 32, color: "lightgreen"});
-console.log(lawn);
-for (let i = 80; i < 80+32; i += 8) {
-    for (let j = 80; j < 80+32; j += 8) {
 
-    }
-}
+
 
 // Lawnmower object
 let lawnmower = {
@@ -167,11 +173,13 @@ function render() {
         animWin();
     }
     ctx.clearRect(0, 0, W, H);
-
     // Draw lawn
     lawn.forEach(function (block) {
-        ctx.fillStyle = block.color;
-        ctx.fillRect(block.x, block.y, block.width, block.height);
+        if(block.image === ""){
+            ctx.fillStyle = block.color;
+            ctx.fillRect(block.x, block.y, block.width, block.height);
+        }
+
     });
 
     // Update lawnmower position
@@ -227,11 +235,21 @@ if (lawnmower.canplay) {
 
     // Update lawnmower image
     updateImage();
+    
+
+
 }
 
 
     // Draw lawnmower
     ctx.drawImage(currentImage, lawnmower.x, lawnmower.y, lawnmowerImage.width, lawnmowerImage.height);
+
+    lawn.forEach(function (block) {
+        if(block.image != ""){
+            ctx.drawImage(TreeImage, block.x-20, block.y-52, TreeImage.width, TreeImage.height);
+        }
+
+    });
 
 
     window.requestAnimationFrame(render);

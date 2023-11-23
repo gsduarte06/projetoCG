@@ -49,6 +49,7 @@ label {
 }
 
 #startButton {
+  font-family: 'Grass Road';
   padding: 8px 15px;
   font-size: 18px;
   background-color: #395F39;
@@ -57,7 +58,6 @@ label {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-family: 'Grass Road';
 }
 
 #startButton:hover {
@@ -77,9 +77,6 @@ label {
 
 }
 
-#LabelSpeed{
- font-family: 'Grass Road';
-}
 
 .intro-container {
   display: flex;
