@@ -5,12 +5,19 @@ const ctx = canvas.getContext("2d");
 const W = canvas.width, H = canvas.height;
 
 // Lawn initialization with an obstacle (hole)
+/* const lawn = [];
+for (let i = 0; i < W; i += 64) {
+    for (let j = 0; j < H; j += 64) {
+        lawn.push({ x: i, y: j, width: 64, height: 64, color: "green"});
+    }
+} */
 const lawn = [];
 for (let i = 0; i < W; i += 8) {
     for (let j = 0; j < H; j += 8) {
         lawn.push({ x: i, y: j, width: 8, height: 8, color: "green"});
     }
 }
+
 
 // Add an obstacle (hole) to the lawn
 
@@ -95,7 +102,7 @@ function keyReleased(e) {
 document.getElementById("startButton").addEventListener("click", (event) => {
     lawnmower.canplay = true
     var speedElement = document.getElementById("speedInput")
-    var speed = parseInt(speedElement.value);
+    var speed = parseInt(speedElement.value) + 2;
     lawnmower.speed = speed
     speedElement.disabled = true;
     event.target.disabled = true
@@ -121,7 +128,9 @@ function updateImage() {
     }
 }
 function animWin() {
-    document.getElementById("wrapper").style.display= "flex"
+    const wrapper = document.getElementById("wrapper")
+    wrapper.style.display= "flex"
+    wrapper.style.zIndex = "2"
     for (i = 0; i < 200; i++) {
         // Random rotation
         var randomRotation = Math.floor(Math.random() * 360);
@@ -131,7 +140,6 @@ function animWin() {
 
         // Random animation-delay
         var randomAnimationDelay = Math.floor(Math.random() * 10);
-        console.log(randomAnimationDelay)
 
         // Random colors
         var colors = ['#0CD977', '#FF1C1C', '#FF93DE', '#5767ED', '#FFC61C', '#8497B0']
