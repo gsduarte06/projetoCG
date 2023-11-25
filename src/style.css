@@ -39,7 +39,7 @@ label {
   font-weight: bold;
 }
 
-#speedInput {
+.Inputs {
   padding: 5px;
   font-size: 16px;
   background-color: #abc5ab;
@@ -77,6 +77,11 @@ label {
 
 }
 
+#ObstaclesInput:disabled {
+  background-color: #dde7dd;
+  cursor: not-allowed;
+
+}
 
 .intro-container {
   display: flex;
@@ -100,6 +105,7 @@ label {
   display: none;
   font-size: larger;
 }
+
 
 h1 {
   font-size: 3em;

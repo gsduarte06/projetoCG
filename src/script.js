@@ -5,46 +5,32 @@ const ctx = canvas.getContext("2d");
 const W = canvas.width, H = canvas.height;
 
 // Lawn initialization with an obstacle (hole)
-/* const lawn = [];
-for (let i = 0; i < W; i += 64) {
-    for (let j = 0; j < H; j += 64) {
-        lawn.push({ x: i, y: j, width: 64, height: 64, color: "green"});
-    }
-} */
+
 const lawn = [];
 for (let i = 0; i < W; i += 8) {
     for (let j = 0; j < H; j += 8) {
-        lawn.push({ x: i, y: j, width: 8, height: 8, color: "green",image:""});
+        lawn.push({ x: i, y: j, width: 8, height: 8, color: "green", IsObst: 0 });
     }
 }
 
-let TreeImage = new Image();
-TreeImage.src = "./src/images/tree-1.png"
-TreeImage.onload = function(){
-    PlaceObsticle(100,132, TreeImage);
+function generateRandomCoordinate(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
 }
+
+
+
 
 
 // Add an obstacle (hole) to the lawn
 
-function PlaceObsticle(x,y,TreeImage){
-    for (let v in lawn){
-        if((lawn[v].x >= x  && lawn[v].x < 124) && (lawn[v].y >= y && lawn[v].y < 144)){
-            lawn[v].color = "lightgreen"
-        }
-    }
-    
-    lawn.push({ x: x +  5 , y: y, width: 19, height: 12, color: "lightgreen", image: 1});
-    ctx.drawImage(TreeImage, x, y, TreeImage.width, TreeImage.height);
-    console.log(lawn);
-}
+
 
 
 
 // Lawnmower object
 let lawnmower = {
-    x: W / 2,
-    y: H / 2,
+    x: 0,
+    y: 0,
     speed: 4,
     dirX: 0,
     dirY: 0,
@@ -104,15 +90,37 @@ function keyReleased(e) {
 
     e.preventDefault();
 }
-
+function PlaceObsticles(quantity) {
+    for (i = 0; i < quantity; i++) {
+        var x = generateRandomCoordinate(64, W-64);
+        var y = generateRandomCoordinate(64, H-64);
+        var difx = x + 24;
+        var dify = y+ 22;
+        for (let v in lawn) {
+            if ((lawn[v].x >= x && lawn[v].x < difx) && (lawn[v].y >= y && lawn[v].y < dify)) {
+                lawn[v].color = "lightgreen"
+            }
+        }
+        lawn.push({ x: x, y: y, width: 22, height: 24, color: "lightgreen", IsObst: 1 });
+    }
+}
+var quantityObstacles = 0
+let TreeImage = new Image();
+TreeImage.src = "./src/images/tree-1.png"
 document.getElementById("startButton").addEventListener("click", (event) => {
     lawnmower.canplay = true
     var speedElement = document.getElementById("speedInput")
     var speed = parseInt(speedElement.value) + 2;
     lawnmower.speed = speed
+    var ObstElement = document.getElementById("ObstaclesInput")
+    quantityObstacles = ObstElement.value;
+    PlaceObsticles(quantityObstacles);
     speedElement.disabled = true;
-    event.target.disabled = true
+    event.target.disabled = true;
+    ObstElement.disabled = true;
 })
+
+
 
 function updateImage() {
     if (lawnmower.dirX === 1 && lawnmower.dirY === 0) {
@@ -135,7 +143,7 @@ function updateImage() {
 }
 function animWin() {
     const wrapper = document.getElementById("wrapper")
-    wrapper.style.display= "flex"
+    wrapper.style.display = "flex"
     wrapper.style.zIndex = "2"
     for (i = 0; i < 200; i++) {
         // Random rotation
@@ -162,6 +170,14 @@ function animWin() {
         document.getElementById("confetti-wrapper").appendChild(confetti);
     }
 }
+
+
+const lenghLawn = lawn.filter((x) => (x.color != "lightgreen" && x.IsObst === 0)).length
+function calcPercentage(){
+    console.log(lenghLawn);
+    console.log(lawn.filter((x) => (x.color != "green" && x.IsObst === 0)).length);
+    return parseInt((lawn.filter((x) => (x.color != "green" && x.IsObst === 0)).length/lenghLawn) * 100);
+}
 lawnmowerImage.width = 32; // default
 lawnmowerImage.height = 32; // default
 // Animation loop
@@ -169,13 +185,15 @@ function render() {
     //Check win
     const win = arr => arr.every(v => v.color === arr[0].color && arr[0].color === "lightgreen" && lawnmower.canplay)
     if (win(lawn)) {
+        document.getElementById("percentage").textContent = `${calcPercentage()}%`;
         lawnmower.canplay = false;
         animWin();
     }
     ctx.clearRect(0, 0, W, H);
     // Draw lawn
     lawn.forEach(function (block) {
-        if(block.image === ""){
+
+        if (block.IsObst != 1) {
             ctx.fillStyle = block.color;
             ctx.fillRect(block.x, block.y, block.width, block.height);
         }
@@ -183,70 +201,75 @@ function render() {
     });
 
     // Update lawnmower position
-if (lawnmower.canplay) {
-    const prevX = lawnmower.x;
-    const prevY = lawnmower.y;
+    if (lawnmower.canplay) {
+        document.getElementById("percentage").textContent = `${calcPercentage()}%`;
+        const prevX = lawnmower.x;
+        const prevY = lawnmower.y;
 
-    // Update lawnmower position based on direction
-    lawnmower.x += lawnmower.dirX * lawnmower.speed;
-    lawnmower.y += lawnmower.dirY * lawnmower.speed;
+        // Update lawnmower position based on direction
+        lawnmower.x += lawnmower.dirX * lawnmower.speed;
+        lawnmower.y += lawnmower.dirY * lawnmower.speed;
 
-    // Boundary checking for the canvas edges
-    if (lawnmower.x < 5) lawnmower.x = 5;
-    if (lawnmower.y < 5) lawnmower.y = 5;
-    if (lawnmower.x + 32 > W) lawnmower.x = W - 32;
-    if (lawnmower.y + 32 > H) lawnmower.y = H - 32;
+        // Boundary checking for the canvas edges
+        if (lawnmower.x < 0) lawnmower.x = 0;
+        if (lawnmower.y < 0) lawnmower.y = 0;
+        if (lawnmower.x + 30 > W) lawnmower.x = W - 30;
+        if (lawnmower.y + 30 > H) lawnmower.y = H - 30;
 
-    // Boundary checking for the hole
-    const hole = lawn[lawn.length - 1]; // The last element is the hole
-    if (
-        lawnmower.x < hole.x + hole.width &&
-        lawnmower.x + 32 > hole.x &&
-        lawnmower.y < hole.y + hole.height &&
-        lawnmower.y + 32 > hole.y
-    ) {
-        // Adjust lawnmower position to prevent moving into the hole
-        lawnmower.x = prevX;
-        lawnmower.y = prevY;
-    }
+        // Boundary checking for the hole
+        for (i = 0; i < quantityObstacles; i++) {
+            const hole = lawn[lawn.length - (i+1)]; // The last element is the hole
+            console.log(hole);
+            console.log(i);
+            console.log(lawn.length);
+            if (lawnmower.x < hole.x + hole.width &&
+                lawnmower.x + 28> hole.x &&
+                lawnmower.y < hole.y + hole.height &&
+                lawnmower.y + 28> hole.y) {
+                // Adjust lawnmower position to prevent moving into the hole
+                lawnmower.x = prevX;
+                lawnmower.y = prevY;
 
-    // Update lawn color based on lawnmower movement
-    lawn.forEach(function (block) {
-        if (
-            prevX < block.x + block.width &&
-            prevX + 30 > block.x &&
-            prevY < block.y + block.height &&
-            prevY + 30 > block.y
-        ) {
-            if (block.color === "green" && block !== hole) {
-                block.color = "lightgreen";
             }
         }
-    });
 
-    // Check if the lawnmower is moving diagonally
-    if (lawnmower.dirX !== 0 && lawnmower.dirY !== 0) {
-        lawnmowerImage.width = 50;
-        lawnmowerImage.height = 50;
-    } else {
-        lawnmowerImage.width = 32;
-        lawnmowerImage.height = 32;
+        // Update lawn color based on lawnmower movement
+        lawn.forEach(function (block) {
+            if (
+                prevX < block.x + block.width &&
+                prevX + 30 > block.x &&
+                prevY < block.y + block.height &&
+                prevY + 30 > block.y
+            ) {
+                if (block.color === "green" && block.IsObst != 1) {
+                    block.color = "lightgreen";
+                }
+            }
+        });
+
+        // Check if the lawnmower is moving diagonally
+        if (lawnmower.dirX !== 0 && lawnmower.dirY !== 0) {
+            lawnmowerImage.width = 50;
+            lawnmowerImage.height = 50;
+        } else {
+            lawnmowerImage.width = 32;
+            lawnmowerImage.height = 32;
+        }
+
+        // Update lawnmower image
+        updateImage();
+
+
+
     }
-
-    // Update lawnmower image
-    updateImage();
-    
-
-
-}
 
 
     // Draw lawnmower
     ctx.drawImage(currentImage, lawnmower.x, lawnmower.y, lawnmowerImage.width, lawnmowerImage.height);
 
     lawn.forEach(function (block) {
-        if(block.image != ""){
-            ctx.drawImage(TreeImage, block.x-20, block.y-52, TreeImage.width, TreeImage.height);
+        if (block.IsObst != 0) {
+            ctx.drawImage(TreeImage, block.x - 18, block.y - 46, TreeImage.width, TreeImage.height);
         }
 
     });
@@ -256,10 +279,10 @@ if (lawnmower.canplay) {
 
 }
 
-document.getElementById('mowText').addEventListener('click', function() {
+document.getElementById('mowText').addEventListener('click', function () {
     document.querySelector('.intro-container').classList.add('fade-out');
-    setTimeout(function() {
-      document.querySelector('.intro-container').style.display = 'none';
-      document.querySelector('#gameContainer').style.display = 'block';
-    }, 1000);
-  });
+    setTimeout(function () {
+        document.querySelector('.intro-container').style.display = 'none';
+        document.querySelector('#gameContainer').style.display = 'block';
+    }, 1000); 
+});
