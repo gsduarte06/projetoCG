@@ -21,12 +21,6 @@ function generateRandomCoordinate(min, max) {
 
 
 
-// Add an obstacle (hole) to the lawn
-
-
-
-
-
 // Lawnmower object
 let lawnmower = {
     x: 0,
@@ -90,20 +84,60 @@ function keyReleased(e) {
 
     e.preventDefault();
 }
+
+
 function PlaceObsticles(quantity) {
     for (i = 0; i < quantity; i++) {
-        var x = generateRandomCoordinate(64, W-64);
-        var y = generateRandomCoordinate(64, H-64);
-        var difx = x + 24;
-        var dify = y+ 22;
+        var x = generateRandomCoordinate(64, W - 64);
+        var y = generateRandomCoordinate(128, H - 128);
+        console.log(`Obstáculo ${i}`);
+        x, y = checkPlace(x, y);
+        var difx = x + 40;
+        var dify = y + 32;
         for (let v in lawn) {
             if ((lawn[v].x >= x && lawn[v].x < difx) && (lawn[v].y >= y && lawn[v].y < dify)) {
                 lawn[v].color = "lightgreen"
             }
         }
-        lawn.push({ x: x, y: y, width: 22, height: 24, color: "lightgreen", IsObst: 1 });
+        lawn.push({ x: x, y: y, width: 32, height: 32, color: "lightgreen", IsObst: 1 });
     }
 }
+
+function checkPlace(x, y) {
+    console.log(lawn.filter((x) => x.IsObst === 1));
+   var valid = true
+   var count = 0
+   while (valid && count < 20){
+    valid = false;
+    for (var obs in lawn.filter((x) => x.IsObst === 1)) {
+        var obstacles = lawn.filter((x) => x.IsObst === 1);
+        console.log(x, y);
+        var minx = obstacles[obs].x -  32
+        var miny = obstacles[obs].y - 96
+        var difx = obstacles[obs].x + 96
+        var dify = obstacles[obs].y + 32
+
+        console.log("X Variables: ", minx, difx);
+        console.log("Y Variables: ", miny, dify);
+        if(x >= minx && x <= difx ){
+            valid = true;
+            console.log("X CHANGED");
+            x = generateRandomCoordinate(64, W - 64);
+        }
+        if(y >= miny && y <= dify ){
+            valid = true;
+            console.log("Y CHANGED");
+            y = generateRandomCoordinate(128, H - 128);
+        }
+
+    }
+    count ++
+}
+    return x, y
+
+}
+
+
 var quantityObstacles = 0
 let TreeImage = new Image();
 TreeImage.src = "./src/images/tree-1.png"
@@ -173,10 +207,8 @@ function animWin() {
 
 
 const lenghLawn = lawn.filter((x) => (x.color != "lightgreen" && x.IsObst === 0)).length
-function calcPercentage(){
-    console.log(lenghLawn);
-    console.log(lawn.filter((x) => (x.color != "green" && x.IsObst === 0)).length);
-    return parseInt((lawn.filter((x) => (x.color != "green" && x.IsObst === 0)).length/lenghLawn) * 100);
+function calcPercentage() {
+    return parseInt((lawn.filter((x) => (x.color != "green" && x.IsObst === 0)).length / lenghLawn) * 100);
 }
 lawnmowerImage.width = 32; // default
 lawnmowerImage.height = 32; // default
@@ -218,14 +250,11 @@ function render() {
 
         // Boundary checking for the hole
         for (i = 0; i < quantityObstacles; i++) {
-            const hole = lawn[lawn.length - (i+1)]; // The last element is the hole
-            console.log(hole);
-            console.log(i);
-            console.log(lawn.length);
+            const hole = lawn[lawn.length - (i + 1)]; // The last element is the hole
             if (lawnmower.x < hole.x + hole.width &&
-                lawnmower.x + 28> hole.x &&
+                lawnmower.x + 24 > hole.x &&
                 lawnmower.y < hole.y + hole.height &&
-                lawnmower.y + 28> hole.y) {
+                lawnmower.y + 24 > hole.y) {
                 // Adjust lawnmower position to prevent moving into the hole
                 lawnmower.x = prevX;
                 lawnmower.y = prevY;
@@ -269,7 +298,7 @@ function render() {
 
     lawn.forEach(function (block) {
         if (block.IsObst != 0) {
-            ctx.drawImage(TreeImage, block.x - 18, block.y - 46, TreeImage.width, TreeImage.height);
+            ctx.drawImage(TreeImage, block.x - 12, block.y - 46, TreeImage.width, TreeImage.height);
         }
 
     });
@@ -284,5 +313,5 @@ document.getElementById('mowText').addEventListener('click', function () {
     setTimeout(function () {
         document.querySelector('.intro-container').style.display = 'none';
         document.querySelector('#gameContainer').style.display = 'block';
-    }, 1000); 
+    }, 1000);
 });
